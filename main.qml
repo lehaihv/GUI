@@ -369,8 +369,11 @@ ApplicationWindow {
                         Slider {
                             id: sliderR
                             Layout.fillWidth: true
-                            from: 0; to: 255; value: root.currentR
-                            
+                            Layout.preferredHeight: 44   // <-- THE FIX: gives the slider a real clickable area
+                            implicitHeight: 44
+                            from: 0; to: 255; stepSize: 1
+                            value: root.currentR
+
                             background: Rectangle {
                                 x: sliderR.leftPadding
                                 y: sliderR.topPadding + sliderR.availableHeight / 2 - height / 2
@@ -382,19 +385,18 @@ ApplicationWindow {
                                 }
                             }
                             handle: Rectangle {
+                                implicitWidth: 24        // <-- lets the Slider compute its size
+                                implicitHeight: 24
                                 x: sliderR.leftPadding + sliderR.visualPosition * (sliderR.availableWidth - width)
                                 y: sliderR.topPadding + sliderR.availableHeight / 2 - height / 2
                                 width: 24; height: 24; radius: 12
-                                color: "#ffffff"
-                                border.color: "#f87171"; border.width: 3
-                                // NO MOUSE AREA HERE! The Slider handles dragging natively.
+                                color: "#ffffff"; border.color: "#f87171"; border.width: 3
                             }
-                            onValueChanged: {
-                                if (value !== root.currentR) {
-                                    root.currentR = value
-                                    // Removed root.ledOn = true to prevent fighting the switch
-                                    mqtt.set_rgb(value, sliderG.value, sliderB.value)
-                                }
+
+                            onMoved: {   // fires ONLY on user drag
+                                root.currentR = value
+                                root.ledOn = true
+                                mqtt.set_rgb(sliderR.value, sliderG.value, sliderB.value)
                             }
                         }
                         Label { text: sliderR.value.toFixed(0); color: "#f87171"; font.bold: true; font.pixelSize: 16; Layout.preferredWidth: 35; horizontalAlignment: Text.AlignRight }
@@ -407,8 +409,11 @@ ApplicationWindow {
                         Slider {
                             id: sliderG
                             Layout.fillWidth: true
-                            from: 0; to: 255; value: root.currentG
-                            
+                            Layout.preferredHeight: 44
+                            implicitHeight: 44
+                            from: 0; to: 255; stepSize: 1
+                            value: root.currentG
+
                             background: Rectangle {
                                 x: sliderG.leftPadding
                                 y: sliderG.topPadding + sliderG.availableHeight / 2 - height / 2
@@ -420,17 +425,18 @@ ApplicationWindow {
                                 }
                             }
                             handle: Rectangle {
+                                implicitWidth: 24
+                                implicitHeight: 24
                                 x: sliderG.leftPadding + sliderG.visualPosition * (sliderG.availableWidth - width)
                                 y: sliderG.topPadding + sliderG.availableHeight / 2 - height / 2
                                 width: 24; height: 24; radius: 12
-                                color: "#ffffff"
-                                border.color: "#4ade80"; border.width: 3
+                                color: "#ffffff"; border.color: "#4ade80"; border.width: 3
                             }
-                            onValueChanged: {
-                                if (value !== root.currentG) {
-                                    root.currentG = value
-                                    mqtt.set_rgb(sliderR.value, value, sliderB.value)
-                                }
+
+                            onMoved: {
+                                root.currentG = value
+                                root.ledOn = true
+                                mqtt.set_rgb(sliderR.value, sliderG.value, sliderB.value)
                             }
                         }
                         Label { text: sliderG.value.toFixed(0); color: "#4ade80"; font.bold: true; font.pixelSize: 16; Layout.preferredWidth: 35; horizontalAlignment: Text.AlignRight }
@@ -443,8 +449,11 @@ ApplicationWindow {
                         Slider {
                             id: sliderB
                             Layout.fillWidth: true
-                            from: 0; to: 255; value: root.currentB
-                            
+                            Layout.preferredHeight: 44
+                            implicitHeight: 44
+                            from: 0; to: 255; stepSize: 1
+                            value: root.currentB
+
                             background: Rectangle {
                                 x: sliderB.leftPadding
                                 y: sliderB.topPadding + sliderB.availableHeight / 2 - height / 2
@@ -456,17 +465,18 @@ ApplicationWindow {
                                 }
                             }
                             handle: Rectangle {
+                                implicitWidth: 24
+                                implicitHeight: 24
                                 x: sliderB.leftPadding + sliderB.visualPosition * (sliderB.availableWidth - width)
                                 y: sliderB.topPadding + sliderB.availableHeight / 2 - height / 2
                                 width: 24; height: 24; radius: 12
-                                color: "#ffffff"
-                                border.color: "#60a5fa"; border.width: 3
+                                color: "#ffffff"; border.color: "#60a5fa"; border.width: 3
                             }
-                            onValueChanged: {
-                                if (value !== root.currentB) {
-                                    root.currentB = value
-                                    mqtt.set_rgb(sliderR.value, sliderG.value, value)
-                                }
+
+                            onMoved: {
+                                root.currentB = value
+                                root.ledOn = true
+                                mqtt.set_rgb(sliderR.value, sliderG.value, sliderB.value)
                             }
                         }
                         Label { text: sliderB.value.toFixed(0); color: "#60a5fa"; font.bold: true; font.pixelSize: 16; Layout.preferredWidth: 35; horizontalAlignment: Text.AlignRight }
